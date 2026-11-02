@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import type { ResumeContent, TemplateType } from '@/types';
+import { escapeHtml, escapeHtmlValues, safeLinkUrl } from '@/lib/html';
 
 export async function POST(request: NextRequest) {
   try {
@@ -39,6 +40,12 @@ export async function POST(request: NextRequest) {
 }
 
 function generateHTML(content: ResumeContent, fileName: string, template: TemplateType = 'modern', latexCode?: string): string {
+  // CV fields are text, never trusted markup. Escape once before formatting.
+  content = escapeHtmlValues(content);
+  fileName = escapeHtml(fileName);
+  if (content.personal_info.website) {
+    content.personal_info.website = safeLinkUrl(content.personal_info.website);
+  }
   const personalInfo = content.personal_info;
   const fullName = `${personalInfo.first_name} ${personalInfo.last_name}`;
   const isCurrentDate = new Date().toLocaleDateString('en-US', {

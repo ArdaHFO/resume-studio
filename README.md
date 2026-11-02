@@ -1,8 +1,10 @@
+Resume Studio helps you create a CV, find job openings and keep track of your applications.
+
 <p align="center">
-  <img src="app/icon.png" width="112" alt="CSPARK application icon" />
+  <img src="app/icon.png" width="112" alt="Resume Studio application icon" />
 </p>
 
-<h1 align="center">CSPARK CV Builder</h1>
+<h1 align="center">Resume Studio</h1>
 
 <p align="center"><strong>Shape your experience. Prepare your next application.</strong></p>
 <p align="center">A CV editor and career workspace with AI-assisted tailoring, job search and application tracking.</p>
@@ -11,12 +13,12 @@
   <strong>English</strong> · <a href="README.tr.md">Türkçe</a><br />
   <a href="#run-locally"><strong>Run locally</strong></a> ·
   <a href="#inside-the-workspace">Explore the features</a> ·
-  <a href="https://github.com/ArdaHFO/CV1/issues">Report an issue</a>
+  <a href="https://github.com/ArdaHFO/resume-studio/issues">Report an issue</a>
 </p>
 
 ---
 
-Build a CV, compare versions for different roles, explore job listings, and keep applications in one workspace. The `CV1` repository uses the **CSPARK** product identity found in the application metadata. Its interface includes form-based editing, three CV templates, AI suggestions, browser printing and share links.
+Build a CV, compare versions for different roles, explore job listings, and keep applications in one workspace. **Resume Studio** is the CV and career project, separate from **CSpark Content Studio**. Its interface includes form-based editing, three CV templates, AI suggestions, browser printing and share links.
 
 **This is a development-stage web application.** Several integrations require external accounts, while parts of the editor and version history use browser-local storage. Source-backed features below describe the implementation, not a claim that every deployed workflow has been validated.
 
@@ -49,7 +51,7 @@ AI suggestions should preserve the applicant's actual experience. A generated ma
 
 ## Repository preview
 
-This existing image is stored in the repository and illustrates the CV dashboard. It is not a fresh capture or a verification of the current deployment.
+This existing image is stored in the repository and illustrates the CV dashboard. It is not a fresh capture or a verification of the current deployment. The application source and historical images may still show the earlier CSPARK label.
 
 <p align="center">
   <img src="public/dashboard.png" width="900" alt="CV dashboard with a CV count, default CV and editable CV cards" />
@@ -60,8 +62,8 @@ This existing image is stored in the repository and illustrates the CV dashboard
 The lockfile records **Next.js 16.1.6** and **React 19.2.3**. The project also uses TypeScript, Tailwind CSS 4, Supabase and Zustand.
 
 ```bash
-git clone https://github.com/ArdaHFO/CV1.git
-cd CV1
+git clone https://github.com/ArdaHFO/resume-studio.git
+cd resume-studio
 npm ci
 ```
 
@@ -119,6 +121,7 @@ This documentation was checked against source, package metadata and the existing
 - Job-specific optimization can return `fallback: true`. CV import may return an empty structured template when AI parsing is unavailable.
 - The PDF route returns HTML. The editor opens a browser print dialog, where the user can save a PDF. It is not a server-side PDF rendering service.
 - The LaTeX path uses project-specific parsing and rendering helpers. It is not a general TeX compilation environment.
+- Paid checkout is temporarily disabled. The repository has no server-verified, replay-safe payment fulfillment, so redirect parameters cannot activate a plan or add credits. Existing charges require manual reconciliation before paid checkout is restored.
 - Browser-local CV content and version history can be lost when site data is cleared.
 - No automated test script or CI workflow is included in the inspected tree. Billing, sharing, imports and reminders need integration validation in the intended deployment.
 
@@ -140,11 +143,10 @@ types/                Shared TypeScript data types
 - [Main AI API](app/api/ai/route.ts) · [Job search adapters](app/api/jobs/search/route.ts)
 - [CV import](app/api/cv/upload/route.ts) · [Print preparation](app/api/pdf/route.ts)
 - [Historical Gemini integration notes](GEMINI_INTEGRATION.md)
-- [Issues and feature requests](https://github.com/ArdaHFO/CV1/issues)
+- [Issues and feature requests](https://github.com/ArdaHFO/resume-studio/issues)
 
 Include the affected route, template, provider configuration and steps to reproduce an issue. Use synthetic CV examples instead of personal application data. Pull requests should distinguish local UI checks from database or service integration checks.
 
 ## License and credits
 
-No standalone license file is included in this repository. This documentation does not add or change licensing terms. Existing CSPARK assets, package notices and third-party rights are retained.
-
+No standalone license file is included in this repository. This documentation does not add or change licensing terms. Existing artwork, package notices and third-party rights are retained.

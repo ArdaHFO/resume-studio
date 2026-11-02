@@ -1,3 +1,4 @@
+import { getServerUserId } from '@/lib/auth/server-user';
 import { NextRequest, NextResponse } from 'next/server';
 import {
   optimizeResumeContentGroq,
@@ -9,6 +10,11 @@ import {
 
 export async function POST(request: NextRequest) {
   try {
+    const userId = await getServerUserId();
+    if (!userId) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await request.json();
     const { action, ...params } = body;
 

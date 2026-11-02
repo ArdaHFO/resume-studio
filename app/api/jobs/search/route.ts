@@ -1,3 +1,4 @@
+import { getServerUserId } from '@/lib/auth/server-user';
 import { NextRequest, NextResponse } from 'next/server';
 import type { Job, JobSearchParams } from '@/types';
 
@@ -874,6 +875,11 @@ const mockJobs: Job[] = [
 
 export async function GET(request: NextRequest) {
   try {
+    const userId = await getServerUserId();
+    if (!userId) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
     const searchParams = request.nextUrl.searchParams;
     const keywords = searchParams.get('keywords') || '';
     const location = searchParams.get('location') || '';

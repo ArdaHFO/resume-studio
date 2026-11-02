@@ -68,6 +68,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // Do not accept new payments while verified, replay-safe fulfillment is missing.
+    const verifiedFulfillmentAvailable = false;
+    if (!verifiedFulfillmentAvailable) {
+      return NextResponse.json(
+        {
+          error: 'Purchases are temporarily unavailable. Please try again later.',
+          code: 'payment_verification_unavailable',
+        },
+        { status: 503 }
+      );
+    }
+
     const secretKey = process.env.STRIPE_SECRET_KEY;
 
     if (!secretKey) {

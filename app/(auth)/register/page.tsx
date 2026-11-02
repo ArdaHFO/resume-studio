@@ -137,7 +137,11 @@ export default function RegisterPage() {
     setGoogleLoading(true);
 
     try {
-      await signInWithGoogle();
+      const result = await signInWithGoogle();
+      if (result !== true) {
+        setError(result.message);
+        setGoogleLoading(false);
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to sign up with Google');
       setGoogleLoading(false);

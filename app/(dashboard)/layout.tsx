@@ -159,62 +159,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       const searchParams = new URLSearchParams(window.location.search);
       const checkoutStatus = searchParams.get('checkout');
-      const checkoutType = searchParams.get('checkoutType');
-      const paidPlan = searchParams.get('plan');
-      const tokenPack = searchParams.get('tokenPack');
-
       if (checkoutStatus === 'success') {
-        if (checkoutType === 'token-pack' && (tokenPack === 'job-search-5' || tokenPack === 'job-search-10')) {
-          await fetch('/api/billing/checkout-success', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ purchaseType: 'token-pack', tokenPackId: tokenPack }),
-          });
-
-          const cleanUrl = `${window.location.origin}/dashboard`;
-          window.history.replaceState({}, '', cleanUrl);
-          setPaymentMessage(
-            `Payment successful! ${tokenPack === 'job-search-10' ? 10 : 5} job-search tokens were added.`
-          );
-        } else if (checkoutType === 'cv-import-pack') {
-          const cvImportPack = searchParams.get('cvImportPack');
-          if (cvImportPack === 'cv-import-5' || cvImportPack === 'cv-import-10') {
-            await fetch('/api/billing/checkout-success', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ purchaseType: 'cv-import-pack', cvImportPackId: cvImportPack }),
-            });
-            const cleanUrl = `${window.location.origin}/dashboard`;
-            window.history.replaceState({}, '', cleanUrl);
-            setPaymentMessage(
-              `Payment successful! ${cvImportPack === 'cv-import-10' ? 10 : 5} CV import credit(s) added.`
-            );
-          }
-        } else if (checkoutType === 'ai-optimize-pack') {
-          const aiOptimizePack = searchParams.get('aiOptimizePack');
-          if (aiOptimizePack === 'ai-optimize-5' || aiOptimizePack === 'ai-optimize-10') {
-            await fetch('/api/billing/checkout-success', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ purchaseType: 'ai-optimize-pack', aiOptimizePackId: aiOptimizePack }),
-            });
-            const cleanUrl = `${window.location.origin}/dashboard`;
-            window.history.replaceState({}, '', cleanUrl);
-            setPaymentMessage(
-              `Payment successful! ${aiOptimizePack === 'ai-optimize-10' ? 10 : 5} AI optimize credit(s) added.`
-            );
-          }
-        } else if (paidPlan === 'pro-monthly' || paidPlan === 'pro-yearly') {
-          await fetch('/api/billing/checkout-success', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ purchaseType: 'plan', planId: paidPlan }),
-          });
-
-          const cleanUrl = `${window.location.origin}/dashboard`;
-          window.history.replaceState({}, '', cleanUrl);
-          setPaymentMessage('Payment successful! Your Pro plan is now active.');
-        }
+        // Checkout URL parameters cannot confirm payment or grant entitlements.
+        const cleanUrl = `${window.location.origin}/dashboard`;
+        window.history.replaceState({}, '', cleanUrl);
+        setPaymentMessage(
+          'Payment could not be confirmed. No plan or credits were added. Please contact support if you were charged.'
+        );
+        setUpgradeOpen(true);
       }
 
       if (checkoutStatus === 'cancelled') {

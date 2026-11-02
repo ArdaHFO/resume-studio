@@ -1,8 +1,14 @@
+import { getServerUserId } from '@/lib/auth/server-user';
 import { NextRequest, NextResponse } from 'next/server';
 import { optimizeResumeContentGroq } from '@/lib/ai/groq';
 
 export async function POST(request: NextRequest) {
   try {
+    const userId = await getServerUserId();
+    if (!userId) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await request.json();
     const { resumeContent, jobDescription } = body;
 

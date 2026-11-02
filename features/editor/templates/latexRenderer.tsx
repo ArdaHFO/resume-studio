@@ -1,10 +1,12 @@
+import { escapeHtml, safeLinkUrl } from '@/lib/html';
+
 /**
  * Simple LaTeX to HTML renderer for preview purposes
  * This is NOT a full LaTeX compiler, just a basic visual preview
  */
 
 export function renderLatexToHTML(latexCode: string): string {
-  let html = latexCode;
+  let html = escapeHtml(latexCode);
 
   // Remove LaTeX preamble (documentclass, usepackage, etc.)
   html = html.replace(/\\documentclass\[.*?\]\{.*?\}/g, '');
@@ -30,8 +32,13 @@ export function renderLatexToHTML(latexCode: string): string {
   html = html.replace(/\\emph\{([^}]+)\}/g, '<em>$1</em>');
 
   // Links
-  html = html.replace(/\\href\{([^}]+)\}\{([^}]+)\}/g, '<a href="$1" style="color: #2563eb; text-decoration: underline;" target="_blank" rel="noopener noreferrer">$2</a>');
-  html = html.replace(/\\url\{([^}]+)\}/g, '<a href="$1" style="color: #2563eb; text-decoration: underline;" target="_blank" rel="noopener noreferrer">$1</a>');
+  const safeLatexUrl = (url: string) => safeLinkUrl(
+    url.replace(/\\([_%#$])/g, '$1').replace(/\\&amp;/g, '&amp;')
+  );
+  html = html.replace(/\\href\{([^}]+)\}\{([^}]+)\}/g, (_match, url: string, label: string) =>
+    `<a href="${safeLatexUrl(url)}" style="color: #2563eb; text-decoration: underline;" target="_blank" rel="noopener noreferrer">${label}</a>`);
+  html = html.replace(/\\url\{([^}]+)\}/g, (_match, url: string) =>
+    `<a href="${safeLatexUrl(url)}" style="color: #2563eb; text-decoration: underline;" target="_blank" rel="noopener noreferrer">${url}</a>`);
 
   // Itemize/enumerate
   html = html.replace(/\\begin\{itemize\}(\[.*?\])?([\s\S]*?)\\end\{itemize\}/g, (match, opts, content) => {
@@ -74,7 +81,7 @@ export function renderLatexToHTML(latexCode: string): string {
   html = html.replace(/\\vspace\{.*?\}/g, '<div style="margin: 1rem 0;"></div>');
 
   // Special characters
-  html = html.replace(/\\&/g, '&amp;');
+  html = html.replace(/\\&amp;/g, '&amp;');
   html = html.replace(/\\%/g, '%');
   html = html.replace(/\\_/g, '_');
   html = html.replace(/\\#/g, '#');

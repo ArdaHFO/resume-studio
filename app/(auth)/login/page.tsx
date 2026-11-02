@@ -73,7 +73,11 @@ export default function LoginPage() {
     setGoogleLoading(true);
 
     try {
-      await signInWithGoogle();
+      const result = await signInWithGoogle();
+      if (result !== true) {
+        setError(result.message);
+        setGoogleLoading(false);
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to sign in with Google');
       setGoogleLoading(false);

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { getBillingStatus } from '@/lib/database/billing';
 import type { ResumeContent, TemplateType } from '@/types';
 
 // Create a shareable link for CV
@@ -36,14 +37,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check user's billing status to determine expiration
-    const { data: billingData } = await supabase
-      .from('user_billing')
-      .select('plan_type')
-      .eq('user_id', user.id)
-      .single();
-
-    const isPro = billingData?.plan_type === 'pro' || billingData?.plan_type === 'lifetime';
+    // Use the same active-subscription calculation as the rest of the app.
+    const billingStatus = await getBillingStatus(user.id);
+    const isPro = billingStatus.planTier === 'pro';
 
     // Generate unique share token
     const shareToken = crypto.randomUUID();

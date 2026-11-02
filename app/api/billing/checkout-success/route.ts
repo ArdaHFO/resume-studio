@@ -1,8 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { addJobSearchTokens, addCvImportTokens, addAiOptimizeTokens, markCheckoutSuccess } from '@/lib/database/billing';
+import { NextResponse } from 'next/server';
 import { getServerUserId } from '@/lib/auth/server-user';
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     const userId = await getServerUserId();
 
@@ -10,61 +9,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = (await request.json()) as {
-      purchaseType?: 'plan' | 'token-pack' | 'cv-import-pack' | 'ai-optimize-pack';
-      planId?: 'pro-monthly' | 'pro-yearly';
-      tokenPackId?: 'job-search-5' | 'job-search-10';
-      cvImportPackId?: 'cv-import-5' | 'cv-import-10';
-      aiOptimizePackId?: 'ai-optimize-5' | 'ai-optimize-10';
-    };
-
-    const purchaseType = body.purchaseType ?? 'plan';
-
-    if (purchaseType === 'plan') {
-      if (!body.planId) {
-        return NextResponse.json(
-          { success: false, error: 'planId is required' },
-          { status: 400 }
-        );
-      }
-
-      await markCheckoutSuccess(userId, body.planId);
-      return NextResponse.json({ success: true });
-    }
-
-    if (purchaseType === 'cv-import-pack') {
-      if (!body.cvImportPackId) {
-        return NextResponse.json(
-          { success: false, error: 'cvImportPackId is required' },
-          { status: 400 }
-        );
-      }
-      await addCvImportTokens(userId, body.cvImportPackId);
-      return NextResponse.json({ success: true });
-    }
-
-    if (purchaseType === 'ai-optimize-pack') {
-      if (!body.aiOptimizePackId) {
-        return NextResponse.json(
-          { success: false, error: 'aiOptimizePackId is required' },
-          { status: 400 }
-        );
-      }
-      await addAiOptimizeTokens(userId, body.aiOptimizePackId);
-      return NextResponse.json({ success: true });
-    }
-
-    // token-pack
-    if (!body.tokenPackId) {
-      return NextResponse.json(
-        { success: false, error: 'tokenPackId is required' },
-        { status: 400 }
-      );
-    }
-
-    await addJobSearchTokens(userId, body.tokenPackId);
-
-    return NextResponse.json({ success: true });
+    // A redirect or a client-supplied plan is not proof of payment. Resume
+    // fulfillment only after server verification and durable replay protection exist.
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Payment confirmation is unavailable. No plan or credits were added. Please contact support if you were charged.',
+        code: 'payment_verification_unavailable',
+      },
+      { status: 503 }
+    );
   } catch (error) {
     console.error('Failed to process checkout success:', error);
     return NextResponse.json(
