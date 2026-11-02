@@ -1,4 +1,6 @@
-# Gemini 1.5 Flash AI Integration Guide
+# Historical Gemini Integration Notes
+
+> These notes describe an earlier integration. The current main AI routes use Groq and Llama 3.3. See [the README](README.md#ai-and-data-flow) and [app/api/ai/route.ts](app/api/ai/route.ts) for the active path. The retained Gemini helper currently references gemini-2.0-flash. Examples and model names below are historical, not a current deployment guarantee.
 
 ## Overview
 This CV Builder application now uses **Google's Gemini 1.5 Flash 001** (Free Tier) as its primary AI service for all resume optimization, enhancement, and writing features.
@@ -42,12 +44,12 @@ Add the following to `.env.local`:
 
 ```env
 # Gemini AI Configuration
-GEMINI_API_KEY=AIzaSyCH-WhqCKgqFjyTQG0ujss7daqfTPTG1ZY
+GEMINI_API_KEY=your_gemini_api_key
 ```
 
 ### API Key
 - Obtain your Gemini API key from [Google AI Studio](https://aistudio.google.com)
-- The key has been configured in: `.env.local`
+- Set your own key in `.env.local` only when explicitly selecting the retained Gemini helper.
 
 ## Available Endpoints
 
@@ -163,7 +165,7 @@ Possible additions:
 ## Troubleshooting
 
 ### API Key Issues
-- Verify key in `.env.local`: `GEMINI_API_KEY=...`
+- Verify key in `.env.local`: `GEMINI_API_KEY=your_gemini_api_key
 - Check key validity on [Google AI Studio](https://aistudio.google.com)
 - Restart development server after changing key
 
@@ -204,3 +206,4 @@ For issues with Gemini:
 **Last Updated**: February 2026
 **Status**: ✅ Active and fully integrated (FREE TIER)
 **Model**: Gemini 1.5 Flash 001 (v0.24.1 SDK) - No costs!
+

@@ -1,214 +1,150 @@
-# 🚀 AI-Powered CV Builder & Career Hub
+<p align="center">
+  <img src="app/icon.png" width="112" alt="CSPARK application icon" />
+</p>
 
-Modern, AI destekli CV oluşturma ve kariyer yönetim platformu. Next.js 14, Supabase ve OpenAI ile geliştirilmiştir.
+<h1 align="center">CSPARK CV Builder</h1>
 
-## ✨ Özellikler
+<p align="center"><strong>Shape your experience. Prepare your next application.</strong></p>
+<p align="center">A CV editor and career workspace with AI-assisted tailoring, job search and application tracking.</p>
 
-### ✅ Tamamlanan Özellikler
+<p align="center">
+  <strong>English</strong> · <a href="README.tr.md">Türkçe</a><br />
+  <a href="#run-locally"><strong>Run locally</strong></a> ·
+  <a href="#inside-the-workspace">Explore the features</a> ·
+  <a href="https://github.com/ArdaHFO/CV1/issues">Report an issue</a>
+</p>
 
-- **🎨 Çoklu CV Versiyon Yönetimi**: Farklı pozisyonlar için ayrı CV versiyonları oluşturun
-- **🤖 AI Destekli İçerik**: OpenAI GPT-4o ile CV optimizasyonu ve niyet mektubu oluşturma
-- **📝 Gelişmiş Editör**: Form tabanlı CV düzenleme arayüzü
-- **🎯 Modern Şablonlar**: Profesyonel ve minimalist CV şablonları
-- **👤 Kullanıcı Yönetimi**: Supabase Auth ile güvenli kimlik doğrulama
-- **📊 Dashboard**: CV'lerinizi görüntüleyin, düzenleyin ve yönetin
-- **💾 Otomatik Kaydetme**: Değişikliklerinizi anında kaydedin
+---
 
-### 🚧 Geliştirme Aşamasında
+Build a CV, compare versions for different roles, explore job listings, and keep applications in one workspace. The `CV1` repository uses the **CSPARK** product identity found in the application metadata. Its interface includes form-based editing, three CV templates, AI suggestions, browser printing and share links.
 
-- **💼 LinkedIn İş Arama**: İş ilanlarını arayın ve CV'nizi optimize edin
-- **📄 LaTeX Desteği**: Akademik CV'ler için LaTeX editörü
-- **🔗 QR Kod & Dijital Paylaşım**: CV'nizi özel URL ile paylaşın
-- **📥 PDF Export**: CV'nizi PDF olarak indirin
+**This is a development-stage web application.** Several integrations require external accounts, while parts of the editor and version history use browser-local storage. Source-backed features below describe the implementation, not a claim that every deployed workflow has been validated.
 
-## 🛠 Teknoloji Stack
+## Get started
 
-- **Frontend**: Next.js 14 (App Router), React, TypeScript, Tailwind CSS
-- **UI Components**: Shadcn UI
-- **Backend**: Supabase (PostgreSQL, Auth, Storage)
-- **AI**: OpenAI GPT-4o API
-- **State Management**: Zustand
-- **PDF Generation**: @react-pdf/renderer
-- **Code Editor**: Monaco Editor (LaTeX için)
+| Requirement | Repository setup |
+| --- | --- |
+| Runtime | Node.js 20.9.0 or newer |
+| Package manager | npm and the committed lockfile |
+| Accounts and data | Supabase project with Auth and the supplied SQL schema |
+| Main AI service | Groq API key for the configured Llama 3.3 model |
+| Optional services | Apify job sources, Stripe billing and Resend reminders |
 
-## 📦 Kurulum
+1. Complete the local setup and create an account through the application.
+2. Create a CV or import a supported document, then edit personal details, experience, education and skills.
+3. Choose a template, review AI suggestions where configured, and use the print or sharing workflow.
+4. Search for roles and record application progress in the career dashboard.
 
-### Gereksinimler
+## Inside the workspace
 
-- Node.js 18+ 
-- npm veya yarn
-- Supabase hesabı
-- OpenAI API anahtarı
+- **Structured CV editing.** Separate forms cover personal information, experience, education, skills and custom sections.
+- **Three presentation styles.** Modern, Azurill and Academic templates provide different layouts. The Academic path includes LaTeX generation and editing helpers.
+- **AI-assisted writing.** Groq-backed routes support CV optimization, cover letters, section improvement, reviews and keyword extraction.
+- **Document import.** Upload routes extract PDF and Word content, then use AI to populate the structured CV.
+- **Job discovery.** LinkedIn, Workday and CareerOne source adapters use Apify actors when their tokens are configured.
+- **Application and version history.** Dashboard views track applications, job-related optimizations and CV snapshots.
+- **Printing and sharing.** Prepare a printable HTML version, create share links and access QR functionality.
 
-### Adımlar
+AI suggestions should preserve the applicant's actual experience. A generated match score or revised paragraph is guidance, not a verified hiring outcome.
 
-1. **Bağımlılıkları yükleyin**
+## Repository preview
+
+This existing image is stored in the repository and illustrates the CV dashboard. It is not a fresh capture or a verification of the current deployment.
+
+<p align="center">
+  <img src="public/dashboard.png" width="900" alt="CV dashboard with a CV count, default CV and editable CV cards" />
+</p>
+
+## Run locally
+
+The lockfile records **Next.js 16.1.6** and **React 19.2.3**. The project also uses TypeScript, Tailwind CSS 4, Supabase and Zustand.
+
 ```bash
-npm install
+git clone https://github.com/ArdaHFO/CV1.git
+cd CV1
+npm ci
 ```
 
-2. **Ortam değişkenlerini ayarlayın**
+Create `.env.local` in the repository root:
 
-`.env.local` dosyasını düzenleyin ve gerçek değerlerinizi ekleyin:
-
-```env
-# Supabase Configuration
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-
-# OpenAI Configuration
-OPENAI_API_KEY=your_openai_api_key
-
-# Stripe Configuration (Test Mode)
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
-STRIPE_SECRET_KEY=your_stripe_secret_key
-
-# App Configuration
+```dotenv
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_public_key
+SUPABASE_SERVICE_ROLE_KEY=your_server_only_service_role_key
+GROQ_API_KEY=your_groq_api_key
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-3. **Supabase veritabanını kurun**
+Keep service-role and provider keys server-side and outside version control.
 
-`supabase/migrations/001_initial_schema.sql` dosyasındaki SQL komutlarını Supabase SQL Editor'da çalıştırın.
+For a fresh Supabase project, review and apply the SQL in [supabase/migrations](supabase/migrations/) in filename order. Both `009_` files are present and use overlapping `ADD COLUMN IF NOT EXISTS` statements. The repository does not include a Supabase CLI project configuration, so do not assume a one-command migration workflow. Configure Auth redirect URLs for `http://localhost:3000/auth/callback`, and configure Google OAuth if using that sign-in option.
 
-4. **Development server'ı başlatın**
+Add only the integrations you intend to use:
+
+| Variables | Purpose |
+| --- | --- |
+| `APIFY_API_TOKEN` | LinkedIn job actor |
+| `APIFY_WORKDAY_TOKEN` | Workday job actor |
+| `APIFY_CAREERONE_TOKEN` | CareerOne job actor |
+| `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Checkout integration |
+| `RESEND_API_KEY` | Scheduled reminder emails |
+
 ```bash
 npm run dev
 ```
 
-Uygulama [http://localhost:3000](http://localhost:3000) adresinde çalışacaktır.
-
-## 🗂 Proje Yapısı
-
-```
-cv-builder/
-├── app/                          # Next.js App Router
-│   ├── (auth)/                   # Authentication routes
-│   ├── (dashboard)/              # Dashboard layout
-│   ├── editor/[id]/              # CV Editor
-│   ├── api/ai/                   # AI endpoints
-│   └── page.tsx                  # Landing page
-├── features/                     # Feature modules
-│   └── editor/
-│       ├── components/           # Editor forms
-│       └── templates/            # CV templates
-├── lib/                          # Shared utilities
-│   ├── supabase/                 # Supabase client
-│   ├── ai/                       # AI utilities
-│   ├── auth/                     # Auth helpers
-│   ├── database/                 # Database queries
-│   └── store/                    # Zustand stores
-├── types/                        # TypeScript types
-└── components/ui/                # Shadcn UI components
-```
-
-## 🎯 Kullanım
-
-### 1. Kayıt Olun
-- Ana sayfadan "Kayıt Ol" butonuna tıklayın
-- Bilgilerinizi girin ve hesap oluşturun
-
-### 2. CV Oluşturun
-- Dashboard'dan "Yeni CV Oluştur" butonuna tıklayın
-- CV'nize bir başlık verin (örn: "Frontend Developer")
-
-### 3. CV'nizi Düzenleyin
-- Kişisel bilgilerinizi girin
-- İş deneyimlerinizi ekleyin
-- Eğitim bilgilerinizi girin
-- Yeteneklerinizi listeleyin
-
-### 4. AI ile İyileştirin (Yakında)
-- "AI ile İyileştir" butonuna tıklayın
-- İş ilanı açıklamasını yapıştırın
-- AI önerilerini alın ve CV'nizi optimize edin
-
-## 🔑 API Endpoints
-
-### AI Endpoints
-
-#### Optimize CV
-```typescript
-POST /api/ai/optimize
-{
-  "resumeContent": ResumeContent,
-  "jobDescription": string
-}
-```
-
-#### Generate Cover Letter
-```typescript
-POST /api/ai/cover-letter
-{
-  "resumeContent": ResumeContent,
-  "jobListing": JobListing,
-  "tone": "professional" | "friendly" | "formal"
-}
-```
-
-#### Improve Section
-```typescript
-POST /api/ai/improve
-{
-  "sectionName": string,
-  "content": string,
-  "context": string
-}
-```
-
-## 📝 Veritabanı Şeması
-
-### Tables
-
-- **profiles**: Kullanıcı profilleri
-- **resumes**: CV başlıkları ve metadata
-- **resume_versions**: CV içeriği ve versiyonları
-- **job_searches**: İş arama geçmişi
-- **ai_optimizations**: AI optimizasyon geçmişi
-
-Detaylı şema için `supabase/migrations/001_initial_schema.sql` dosyasına bakın.
-
-## 🎨 CV Şablonları
-
-### Modern Template ✅
-- Temiz ve profesyonel tasarım
-- İletişim bilgileri vurgulanmış
-- İş deneyimi odaklı
-
-### Diğer Şablonlar (Gelecek)
-- Akademik Template (LaTeX)
-- Minimalist Template
-- Designer Template
-
-## 🚀 Deployment
-
-### Vercel ile Deploy
+Open [localhost:3000](http://localhost:3000). To check and build the application in a configured development environment:
 
 ```bash
-vercel
+npm run lint
+npm run build
+npm start
 ```
 
-### Environment Variables
+These commands are provided for development. They were not executed for this documentation update.
 
-Production'da environment variables'ları Vercel dashboard'dan ayarlayın.
+## AI and data flow
 
-## 📚 Gelecek Özellikler
+The current [main AI route](app/api/ai/route.ts) and dedicated optimization, cover-letter and improvement routes call [Groq helpers](lib/ai/groq.ts) with `llama-3.3-70b-versatile`.
 
-- [ ] LinkedIn iş arama entegrasyonu
-- [ ] LaTeX editör ve önizleme
-- [ ] QR kod oluşturma
-- [ ] PDF export
-- [ ] Çoklu şablon seçimi
-- [ ] CV analitiği
-- [ ] Tema özelleştirme
+The repository also retains [OpenAI helpers](lib/ai/openai.ts), [Gemini helpers](lib/ai/gemini.ts) and [historical Gemini notes](GEMINI_INTEGRATION.md). Their presence does not make them the active provider for the main route.
 
-## 🐛 Bilinen Sorunlar
+Supabase handles account and database operations. The current editor saves CV content to `localStorage`, and [version history](lib/version-history.ts) also stores snapshots in that browser. Do not assume these local snapshots are synchronized across devices.
 
-- Preview özelliği henüz tamamlanmadı
-- PDF export işlevi geliştirilme aşamasında
-- LinkedIn entegrasyonu için API erişimi gerekli
+## Validation and current limits
 
----
+This documentation was checked against source, package metadata and the existing preview asset. No build, authenticated browser flow, database migration or paid-service request was executed.
 
-**Not**: Bu proje aktif geliştirme aşamasındadır. Yeni özellikler düzenli olarak eklenmektedir.
+- Job search can return mock listings when its integrations are unavailable. Inspect the response's `source` field.
+- Job-specific optimization can return `fallback: true`. CV import may return an empty structured template when AI parsing is unavailable.
+- The PDF route returns HTML. The editor opens a browser print dialog, where the user can save a PDF. It is not a server-side PDF rendering service.
+- The LaTeX path uses project-specific parsing and rendering helpers. It is not a general TeX compilation environment.
+- Browser-local CV content and version history can be lost when site data is cleared.
+- No automated test script or CI workflow is included in the inspected tree. Billing, sharing, imports and reminders need integration validation in the intended deployment.
+
+## Project map
+
+```text
+app/                  Pages, CV editor, sharing views and API routes
+features/editor/      Forms, CV templates and LaTeX helpers
+components/           Shared interface components
+lib/                  AI, Auth, Supabase, database and local history helpers
+supabase/migrations/  SQL schema and feature migrations
+public/               Existing brand and interface assets
+types/                Shared TypeScript data types
+```
+
+## Documentation and contributions
+
+- [Database migrations](supabase/migrations/)
+- [Main AI API](app/api/ai/route.ts) · [Job search adapters](app/api/jobs/search/route.ts)
+- [CV import](app/api/cv/upload/route.ts) · [Print preparation](app/api/pdf/route.ts)
+- [Historical Gemini integration notes](GEMINI_INTEGRATION.md)
+- [Issues and feature requests](https://github.com/ArdaHFO/CV1/issues)
+
+Include the affected route, template, provider configuration and steps to reproduce an issue. Use synthetic CV examples instead of personal application data. Pull requests should distinguish local UI checks from database or service integration checks.
+
+## License and credits
+
+No standalone license file is included in this repository. This documentation does not add or change licensing terms. Existing CSPARK assets, package notices and third-party rights are retained.
+
